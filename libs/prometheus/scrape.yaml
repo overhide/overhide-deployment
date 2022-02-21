@@ -1,0 +1,9 @@
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config
+
+scrape_configs:
+  - job_name: 'nginx-ingress'
+    scrape_interval: 30s
+    kubernetes_sd_configs:
+    - role: pod
+      source_labels: [__meta_kubernetes_pod_name]
+      regex: ^nginx-server.+$

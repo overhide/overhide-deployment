@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $K8_NAME
+  labels:
+    app: $K8_NAME
+spec:
+  selector:
+    matchLabels:
+      app: $K8_NAME
+  replicas: $K8_REPLICAS
+  template:
+    metadata:
+      name: $K8_NAME
+      labels:
+        app: $K8_NAME
+    spec:
+      containers:
+      - name: $K8_NAME
+        image: $K8_IMAGE:$K8_VERSION
+        imagePullPolicy: Always
+        command:
+        ports:
+          - containerPort: $K8_PORT
+        env:
+        - name: DIRTY
+          value: $K8_DIRTY
+        resources:
+          limits:
+            memory: $K8_MEMORY
+      imagePullSecrets:
+      - name: regcred          
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: $K8_NAME
+spec:
+  selector:
+    app: $K8_NAME
+  ports:
+  - protocol: TCP
+    port: $K8_PORT
+    targetPort: $K8_PORT

@@ -1,0 +1,415 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: overhide-site
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 64m
+    ingress.kubernetes.io/proxy-body-size: 64m    
+spec:
+  rules:
+  - host: overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-site
+          servicePort: 80
+  tls:
+  - hosts:
+    - overhide.io
+    - "*.overhide.io"
+    - "*.ledger.overhide.io"
+    secretName: overhide-io-cert
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: pay2myapp-site
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-pay2my-app
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 64m
+    ingress.kubernetes.io/proxy-body-size: 64m    
+spec:
+  rules:
+  - host: pay2my.app
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-site
+          servicePort: 80
+  tls:
+  - hosts:
+    - pay2my.app
+    - "*.pay2my.app"
+    secretName: pay2my-app-cert
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-ledger
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 64m
+    ingress.kubernetes.io/proxy-body-size: 64m    
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: ledger.overhide.io
+    http:
+      paths:
+      - path: /v1
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /onboard
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /register.html
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /onboarded.html
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /onboarding.html
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /onboarderror.html
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /reap
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /pay
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /lib
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /status.json
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+      - path: /swagger.html
+        backend:
+          serviceName: oh-ledger-prod
+          servicePort: 8090
+  tls:
+  - hosts:
+    - ledger.overhide.io
+    secretName: overhide-io-cert
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: test-overhide-ledger
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 64m
+    ingress.kubernetes.io/proxy-body-size: 64m    
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: test.ledger.overhide.io
+    http:
+      paths:
+      - path: /v1
+        backend:
+          serviceName: oh-ledger-test
+          servicePort: 8090
+      - path: /
+        backend:
+          serviceName: oh-ledger-test
+          servicePort: 8090  
+  tls:
+  - hosts:
+    - test.ledger.overhide.io
+    secretName: overhide-io-cert
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-ethereum
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: ethereum.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ethereum-prod
+          servicePort: 8080
+  - host: rinkeby.ethereum.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ethereum-test
+          servicePort: 8080
+  - host: rinkeby-stage.ethereum.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ethereum-stage
+          servicePort: 8080
+  - host: worker.ethereum.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ethereum-prod-worker
+          servicePort: 8080
+  - host: worker-rinkeby.ethereum.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ethereum-test-worker
+          servicePort: 8080
+  tls:
+  - secretName: ethereum-overhide-io-cert
+    hosts:
+    - ethereum.overhide.io
+    - "*.ethereum.overhide.io"
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-bitcoin
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: bitcoin.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-bitcoin-prod
+          servicePort: 8080
+  - host: test.bitcoin.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-bitcoin-test
+          servicePort: 8080
+  - host: stage.bitcoin.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-bitcoin-stage
+          servicePort: 8080
+  - host: worker.bitcoin.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-bitcoin-prod-worker
+          servicePort: 8080
+  - host: worker-test.bitcoin.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-bitcoin-test-worker
+          servicePort: 8080
+  tls:
+  - secretName: bitcoin-overhide-io-cert
+    hosts:
+    - bitcoin.overhide.io
+    - "*.bitcoin.overhide.io"
+
+---  
+  
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-client-auth
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /register
+spec:
+  rules:
+  - host: token.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-client-auth-prod
+          servicePort: 8100
+  - host: stage.token.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-client-auth-stage
+          servicePort: 8100
+  tls:
+  - secretName: token-overhide-io-cert
+    hosts:
+    - token.overhide.io
+    - "*.token.overhide.io"
+
+---  
+  
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-ex-rate
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: rates.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ex-rate-prod
+          servicePort: 8110
+  - host: test.rates.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ex-rate-test
+          servicePort: 8110
+  - host: stage.rates.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ex-rate-stage
+          servicePort: 8110
+  tls:
+  - secretName: rates-overhide-io-cert
+    hosts:
+    - rates.overhide.io
+    - "*.rates.overhide.io"
+
+---  
+  
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: prod-overhide-social
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: social.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-social-prod
+          servicePort: 8120
+  - host: stage.social.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ex-rate-stage
+          servicePort: 8120
+  tls:
+  - secretName: social-overhide-io-cert
+    hosts:
+    - social.overhide.io
+    - "*.social.overhide.io"
+
+---  
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: auth-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # basic-auth
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+    nginx.ingress.kubernetes.io/app-root: /swagger.html
+spec:
+  rules:
+  - host: stage.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-ledger-stage
+          servicePort: 8090
+  tls:
+  - hosts:
+    - stage.overhide.io
+    secretName: overhide-io-cert

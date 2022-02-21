@@ -1,0 +1,142 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging-overhide-io
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ".."
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging-overhide-io
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: ..
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ..
+          tenantID: ..
+          resourceGroupName: overhide
+          hostedZoneName: overhide.io
+          environment: AzurePublicCloud
+
+---
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging-ohledger-com
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ".."
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging-ohledger-com
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: ..
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ..
+          tenantID: ..
+          resourceGroupName: overhide
+          hostedZoneName: ohledger.com
+          environment: AzurePublicCloud
+
+---
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-production-overhide-io
+spec:
+  acme:
+    # The ACME production api URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ".."
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-production-overhide-io
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: ..
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ..
+          tenantID: ..
+          resourceGroupName: overhide
+          hostedZoneName: overhide.io
+          environment: AzurePublicCloud
+
+---
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-production-ohledger-com
+spec:
+  acme:
+    # The ACME production api URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ".."
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-production-ohledger-com
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: ..
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ..
+          tenantID: ..
+          resourceGroupName: overhide
+          hostedZoneName: ohledger.com
+          environment: AzurePublicCloud
+
+---
+
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-production-pay2my-app
+spec:
+  acme:
+    # The ACME production api URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: ".."
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-production-pay2my.app
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: ..
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ..
+          tenantID: ..
+          resourceGroupName: overhide
+          hostedZoneName: pay2my.app
+          environment: AzurePublicCloud

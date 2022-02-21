@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $K8_NAME
+  labels:
+    app: $K8_APP_LABEL
+    kind: $K8_TYPE
+spec:
+  selector:
+    matchLabels:
+      app: $K8_APP_LABEL
+      kind: $K8_TYPE
+  replicas: $K8_REPLICAS
+  template:
+    metadata:
+      name: $K8_NAME
+      labels:
+        app: $K8_APP_LABEL
+        kind: $K8_TYPE
+    spec:
+      containers:
+      - name: $K8_NAME
+        image: $K8_IMAGE:$K8_VERSION
+        imagePullPolicy: Always
+        command: ["bash", "-c", $K8_CMD]
+        ports:
+          - containerPort: $K8_PORT
+        env:
+        - name: DIRTY
+          value: $K8_DIRTY
+        envFrom:
+          - configMapRef:
+              name: $K8_CONFIGMAP_NAME
+          - secretRef:
+              name: $K8_SECRETS
+        resources:
+          limits:
+            memory: $K8_MEMORY
+        readinessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+        livenessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+      imagePullSecrets:
+      - name: regcred          
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $K8_WORKER_NAME
+  labels:
+    app: $K8_APP_LABEL
+    kind: $K8_WORKER_TYPE
+spec:
+  selector:
+    matchLabels:
+      app: $K8_APP_LABEL
+      kind: $K8_WORKER_TYPE
+  replicas: $K8_WORKER_REPLICAS
+  template:
+    metadata:
+      name: $K8_WORKER_NAME
+      labels:
+        app: $K8_APP_LABEL
+        kind: $K8_WORKER_TYPE
+    spec:
+      containers:
+      - name: $K8_WORKER_NAME
+        image: $K8_IMAGE:$K8_VERSION
+        imagePullPolicy: Always
+        command: ["bash", "-c", $K8_CMD]
+        ports:
+          - containerPort: $K8_PORT
+        env:
+        - name: DIRTY
+          value: $K8_DIRTY
+        - name: IS_WORKER
+          value: "true"
+        envFrom:
+          - configMapRef:
+              name: $K8_CONFIGMAP_NAME
+          - secretRef:
+              name: $K8_SECRETS
+        resources:
+          limits:
+            memory: $K8_WORKER_MEMORY
+        readinessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+        livenessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+      imagePullSecrets:
+      - name: regcred          
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: $K8_APP_LABEL
+spec:
+  selector:
+    app: $K8_APP_LABEL
+  ports:
+  - protocol: TCP
+    port: $K8_PORT
+    targetPort: $K8_PORT
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: $K8_WORKER_NAME
+spec:
+  selector:
+    app: $K8_APP_LABEL
+    kind: $K8_WORKER_TYPE
+  ports:
+  - protocol: TCP
+    port: $K8_PORT
+    targetPort: $K8_PORT    

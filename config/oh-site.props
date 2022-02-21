@@ -1,0 +1,6 @@
+K8_NAME=oh-site
+K8_VERSION=oh-site
+K8_REPLICAS=1
+K8_IMAGE=overhide/overhide-private
+K8_PORT=80
+K8_MEMORY="50Mi"
