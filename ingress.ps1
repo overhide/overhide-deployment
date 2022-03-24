@@ -14,6 +14,7 @@ $ingresses = @(
   "prod-overhide-client-auth",
   "prod-overhide-ex-rate",
   "prod-overhide-social",
+  "overhide-arma",
   "auth-ingress"
 )
 

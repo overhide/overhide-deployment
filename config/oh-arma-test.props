@@ -1,0 +1,15 @@
+K8_IMAGE=overhide/armadietto
+K8_VERSION=1.0.0
+
+K8_NAME=oh-arma-test
+K8_TYPE=nonworker
+K8_APP_LABEL=oh-arma-test
+K8_CMD="node /opt/armadietto/bin/armadietto.js -c /usr/local/etc/armadietto.conf.json 2>&1 | logger -s -n rsyslog-server-service -P 514 2>&1"
+K8_REPLICAS=4
+K8_PORT=8000
+K8_PROBE_PATH=/status.txt
+K8_MEMORY="200Mi"
+
+K8_CONFIG_VOLUME_SECRET_NAME=oh-arma-test-config
+K8_DATA_VOLUME_PVC_NAME=oh-arma-test-pvc
+K8_DATA_VOLUME_PVC_SIZE=8Gi

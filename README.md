@@ -1,9 +1,6 @@
 <p align="center"><a href="https://overhide.io"><img src="./.github/logo.png" width="200px"/></a></p>
-
 <p align="center"><a href="https://overhide.io">overhide.io</a></p><p style="width: 500px; margin: auto">A free and fully open-sourced ecosystem of widgets, a front-end library, and back-end services &mdash; to make addition of "logins" and "in-app-purchases" (IAP) to your app as banal as possible.</p>
-
 <hr/>
-
 These are deployment notes supporting the scripts here-in to aid in [overhide](https://github.com/overhide) services deployments.
 
 Everything is using `kubectl` and `powershell`.  Adopt as you please.
@@ -216,6 +213,7 @@ The following scripts are used to push out the various services:
 ./oh-ex-rate.ps1
 ./oh-ledger.ps1
 ./oh-social.ps1
+./oh-arma.ps1
 ```
 
 Each service script has similar prompts for *test* and *prod* containers.  They share a k8s cluster.
@@ -279,7 +277,13 @@ Ensure you have a fresh *overhide-ethereum* container:
 
 Run `./oh-ethereum.ps1`.
 
+#### Deploy Armadietto + Lucchetto
 
+Overhide deployed [RemoteStorage](https://remotestorage.io/) instance based off of [Armadietto + Lucchetto](https://github.com/overhide/armadietto/tree/master/lucchetto).
+
+- pay attention to the PVC created as part of these deployments:
+  - they're `ReadWriteMany`
+  - should be on premium SSD
 
 ## 9. Monitoring
 

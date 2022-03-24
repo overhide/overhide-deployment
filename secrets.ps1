@@ -6,6 +6,8 @@ Write-Host "CONFIG: `n$($conf.GetEnumerator() | sort name | Format-Table | Out-S
 
 # add each secret file below explicitly to check for availability
 $secrets = @(
+  "secrets/oh-arma-test.secrets.yaml",
+  "secrets/oh-arma-prod.secrets.yaml",
   "secrets/oh-client-auth-stage.secrets.yaml",
   "secrets/oh-client-auth-prod.secrets.yaml",
   "secrets/oh-ledger-test.secrets.yaml", 

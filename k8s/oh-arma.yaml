@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $K8_NAME
+  labels:
+    app: $K8_NAME
+spec:
+  selector:
+    matchLabels:
+      app: $K8_NAME
+  replicas: $K8_REPLICAS
+  template:
+    metadata:
+      name: $K8_NAME
+      labels:
+        app: $K8_NAME
+    spec:
+      containers:
+      - name: $K8_NAME
+        image: $K8_IMAGE:$K8_VERSION
+        imagePullPolicy: Always
+        command: ["bash", "-c", $K8_CMD]
+        ports:
+          - containerPort: $K8_PORT
+        env:
+        - name: DIRTY
+          value: $K8_DIRTY
+        resources:
+          requests:
+            memory: $K8_MEMORY
+          limits:
+            memory: $K8_MEMORY
+        readinessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+        livenessProbe:
+          httpGet:
+            path: $K8_PROBE_PATH
+            port: $K8_PORT
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/local/etc
+          readOnly: true
+        - name: data-volume
+          mountPath: "/usr/share/armadietto"
+      imagePullSecrets:
+      - name: regcred          
+      volumes:
+      - name: config-volume
+        secret:
+          secretName: $K8_CONFIG_VOLUME_SECRET_NAME
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: $K8_DATA_VOLUME_PVC_NAME
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: $K8_NAME
+spec:
+  selector:
+    app: $K8_NAME
+  ports:
+  - protocol: TCP
+    port: $K8_PORT
+    targetPort: $K8_PORT
+
+---
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: arma-azurefile
+provisioner: file.csi.azure.com # replace with "kubernetes.io/azure-file" if aks version is less than 1.21
+allowVolumeExpansion: true
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=0
+  - gid=0
+  - mfsymlinks
+  - cache=strict
+  - actimeo=30
+parameters:
+  skuName: Premium_LRS
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: $K8_DATA_VOLUME_PVC_NAME
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: $K8_DATA_VOLUME_PVC_SIZE
+  storageClassName: arma-azurefile

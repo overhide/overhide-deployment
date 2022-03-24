@@ -386,6 +386,41 @@ spec:
     - "*.social.overhide.io"
 
 ---  
+  
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: overhide-arma
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+    cert-manager.io/issuer: letsencrypt-production-overhide-io
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/app-root: /status.txt
+spec:
+  rules:
+  - host: rs.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-arma-prod
+          servicePort: 8000
+  - host: test.rs.overhide.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oh-arma-test
+          servicePort: 8000
+  tls:
+  - secretName: arma-overhide-io-cert
+    hosts:
+    - rs.overhide.io
+    - "*.rs.overhide.io"
+
+---  
 
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
