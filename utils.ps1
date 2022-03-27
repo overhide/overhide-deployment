@@ -126,7 +126,7 @@ function genKubectlApply($file, $props) {
   foreach ( $key in $props.keys ){
     $def = $def.replace("`$${key}", $props.${key});        
   }
-  return "`'$def`' | kubectl apply -f -";
+  return "@""`n$def`n""@ | kubectl apply -f -";
 }
 
 #
